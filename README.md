@@ -1,6 +1,8 @@
 # Insight_Project_Framework
 Framework for machine learning projects at Insight Data Science. 
 
+- assume changed a bit
+
 ## Motivation for this project format:
 - **src** : Put all source code for production within structured directory
 - **tests** : Put all source code for testing in an easy to find location
