@@ -1,7 +1,7 @@
-# Insight_Project_Framework
+# Yan's Insight_Project_Framework
 Framework for machine learning projects at Insight Data Science. 
 
-- assume changed a bit
+NLP for Transfer Learning (NLP-TL)
 
 ## Motivation for this project format:
 - **src** : Put all source code for production within structured directory
