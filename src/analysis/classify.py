@@ -1,25 +1,41 @@
-from model_pretrain import *
 
 ############### going back to classification #############
+import os, sys
 
-df_trn = pd.read_csv(CLAS_PATH/'train.csv', header=None, chunksize=chunksize)
-df_val = pd.read_csv(CLAS_PATH/'test.csv', header=None, chunksize=chunksize)
+
+cwd = os.getcwd()
+sys.path.append(cwd+'/src/analysis')
+
+
+from model_pretrain import *
+
+import os.path.join as join
+
+df_trn = pd.read_csv(join(CLAS_PATH, 'train.csv'), header=None, chunksize=chunksize)
+df_val = pd.read_csv(join(CLAS_PATH, 'test.csv'), header=None, chunksize=chunksize)
 
 tok_trn, trn_labels = get_all(df_trn, 1)
 tok_val, val_labels = get_all(df_val, 1)
 
 
-(CLAS_PATH/'tmp').mkdir(exist_ok=True)
+#(CLAS_PATH/'tmp').mkdir(exist_ok=True)
+os.makedirs(join(CLAS_PATH, 'tmp'), exist_ok=True)
 
-np.save(CLAS_PATH/'tmp'/'tok_trn.npy', tok_trn)
-np.save(CLAS_PATH/'tmp'/'tok_val.npy', tok_val)
+np.save(join(CLAS_PATH, 'tmp/tok_trn.npy'), tok_trn)
+np.save(join(CLAS_PATH, 'tmp/tok_val.npy'), tok_val)
 
-np.save(CLAS_PATH/'tmp'/'trn_labels.npy', trn_labels)
-np.save(CLAS_PATH/'tmp'/'val_labels.npy', val_labels)
+np.save(join(CLAS_PATH, 'tmp/trn_labels.npy'), trn_labels)
+np.save(join(CLAS_PATH, 'tmp/val_labels.npy'), val_labels)
 
-tok_trn = np.load(CLAS_PATH/'tmp'/'tok_trn.npy')
-tok_val = np.load(CLAS_PATH/'tmp'/'tok_val.npy')
-itos = pickle.load((LM_PATH/'tmp'/'itos.pkl').open('rb'))
+tok_trn = np.load(join(CLAS_PATH, 'tmp/tok_trn.npy'))
+tok_val = np.load(os.makedirs(CLAS_PATH, exist_ok=True))
+
+#(CLAS_PATH/'tmp'/'tok_val.npy')
+#CLAS_PATH
+
+f = open(join(LM_PATH, '/tmp/itos.pkl'))
+itos = pickle.load(f)
+#itos = pickle.load((LM_PATH/'tmp'/'itos.pkl').open('rb'))
 stoi = collections.defaultdict(lambda:0, {v:k for k,v in enumerate(itos)})
 len(itos)
 
@@ -27,8 +43,8 @@ len(itos)
 trn_clas = np.array([[stoi[o] for o in p] for p in tok_trn])
 val_clas = np.array([[stoi[o] for o in p] for p in tok_val])
 
-np.save(CLAS_PATH/'tmp'/'trn_ids.npy', trn_clas)
-np.save(CLAS_PATH/'tmp'/'val_ids.npy', val_clas)
+np.save(join(CLAS_PATH, 'tmp/trn_ids.npy', trn_clas)
+np.save(join(CLAS_PATH, 'tmp/val_ids.npy', val_clas)
 
 
 
@@ -40,11 +56,11 @@ np.save(CLAS_PATH/'tmp'/'val_ids.npy', val_clas)
 # We encourage you to try different values to see the effect of data size on performance.
 trn_size = 100
 val_size = 50
-trn_clas = np.load(CLAS_PATH/'tmp'/'trn_ids.npy')
-val_clas = np.load(CLAS_PATH/'tmp'/'val_ids.npy')
+trn_clas = np.load(join(CLAS_PATH, 'tmp/trn_ids.npy'))
+val_clas = np.load(join(CLAS_PATH, 'tmp/val_ids.npy'))
 
-trn_labels = np.squeeze(np.load(CLAS_PATH/'tmp'/'trn_labels.npy'))
-val_labels = np.squeeze(np.load(CLAS_PATH/'tmp'/'val_labels.npy'))
+trn_labels = np.squeeze(np.load(CLAS_PATH, 'tmp/trn_labels.npy'))
+val_labels = np.squeeze(np.load(CLAS_PATH, 'tmp/val_labels.npy'))
 
 train = random.sample(list(zip(trn_clas, trn_labels)), trn_size)
 trn_clas = np.array([item[0] for item in train])

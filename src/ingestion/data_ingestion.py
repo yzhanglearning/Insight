@@ -1,10 +1,11 @@
-from utils import *
 
 
-###############################
+################ data loading/ingestion ############
+import os
+import pandas as pd
 
 
-path = 'data/Amazon'
+path = 'data/raw/Amazon'
 train = []
 with open(os.path.join(path, 'train.ft.txt'), 'r', encoding='utf8') as file:
     for line in file:
@@ -27,13 +28,15 @@ test = test[1:1000]
 BOS = 'xbos'  # beginning-of-sentence tag
 FLD = 'xfld'  # data field tag
 
-PATH=Path(path)
+#PATH=Path(path)
 
-CLAS_PATH=PATH/'amazon_class'
-CLAS_PATH.mkdir(exist_ok=True)
+CLAS_PATH=os.path.join(path, 'amazon_class')
+os.makedirs(CLAS_PATH, exist_ok=True)
+#CLAS_PATH.mkdir(exist_ok=True)
 
-LM_PATH=PATH/'amazon_lm'
-LM_PATH.mkdir(exist_ok=True)
+LM_PATH=os.path.join(path, 'amazon_lm')
+os.makedirs(LM_PATH, exist_ok=True)
+#LM_PATH.mkdir(exist_ok=True)
 
 
 # Each item is '__label__1/2' and then the review so we split to get texts and labels
@@ -52,8 +55,8 @@ df_val = pd.DataFrame({'text':val_texts, 'labels':val_labels}, columns=col_names
 
 df_trn.head(10)
 
-df_trn.to_csv(CLAS_PATH/'train.csv', header=False, index=False)
-df_val.to_csv(CLAS_PATH/'test.csv', header=False, index=False)
+df_trn.to_csv(os.path.join(CLAS_PATH, 'train.csv'), header=False, index=False)
+df_val.to_csv(os.path.join(CLAS_PATH, 'test.csv'), header=False, index=False)
 
 CLASSES = ['neg', 'pos']
-(CLAS_PATH/'classes.txt').open('w').writelines(f'{o}\n' for o in CLASSES)
+open(os.path.join(CLAS_PATH, 'classes.txt'), 'w').writelines(f'{o}\n' for o in CLASSES)

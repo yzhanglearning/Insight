@@ -1,7 +1,19 @@
 
-from data_prep import *
-
 ################ language model ###############
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+import sys
+import os
+import re
+import html
+from fastai.text import *
+
+
+cwd = os.getcwd()
+sys.path.append(cwd+'/src/ingestion')
+from data_ingestion import *
+
 
 # We're going to fine tune the language model so it's ok to take some of the test set in our train data
 # for the lm fine-tuning
@@ -10,8 +22,8 @@ trn_texts,val_texts = train_test_split(np.concatenate([trn_texts,val_texts]), te
 df_trn = pd.DataFrame({'text':trn_texts, 'labels':[0]*len(trn_texts)}, columns=col_names)
 df_val = pd.DataFrame({'text':val_texts, 'labels':[0]*len(val_texts)}, columns=col_names)
 
-df_trn.to_csv(LM_PATH/'train.csv', header=False, index=False)
-df_val.to_csv(LM_PATH/'test.csv', header=False, index=False)
+df_trn.to_csv(os.path.join(LM_PATH, 'train.csv'), header=False, index=False)
+df_val.to_csv(os.path.join(LM_PATH, 'test.csv'), header=False, index=False)
 
 
 # Here we use functions from the fast.ai course to get data
@@ -44,8 +56,8 @@ def get_all(df, n_lbls):
         labels += labels_
     return tok, labels
 
-df_trn = pd.read_csv(LM_PATH/'train.csv', header=None, chunksize=chunksize)
-df_val = pd.read_csv(LM_PATH/'test.csv', header=None, chunksize=chunksize)
+df_trn = pd.read_csv(os.path.join(LM_PATH, 'train.csv'), header=None, chunksize=chunksize)
+df_val = pd.read_csv(os.path.join(LM_PATH, 'test.csv'), header=None, chunksize=chunksize)
 
 
 
@@ -61,8 +73,8 @@ tok_val, val_labels = get_all(df_val, 1)
 #(LM_PATH/'tmp').mkdir(exist_ok=True)
 #np.save(LM_PATH/'tmp'/'tok_trn.npy', tok_trn)
 #np.save(LM_PATH/'tmp'/'tok_val.npy', tok_val)
-tok_trn = np.load(LM_PATH/'tmp'/'tok_trn.npy')
-tok_val = np.load(LM_PATH/'tmp'/'tok_val.npy')
+tok_trn = np.load(os.path.join(LM_PATH, 'tmp/'+'tok_trn.npy'))
+tok_val = np.load(os.path.join(LM_PATH, 'tmp/'+'tok_val.npy'))
 
 
 # Check the most common tokens
@@ -88,15 +100,15 @@ len(itos)
 trn_lm = np.array([[stoi[o] for o in p] for p in tok_trn])
 val_lm = np.array([[stoi[o] for o in p] for p in tok_val])
 
-np.save(LM_PATH/'tmp'/'trn_ids.npy', trn_lm)
-np.save(LM_PATH/'tmp'/'val_ids.npy', val_lm)
-pickle.dump(itos, open(LM_PATH/'tmp'/'itos.pkl', 'wb'))
+np.save(os.path.join(LM_PATH, 'tmp/'+'trn_ids.npy'), trn_lm)
+np.save(os.path.join(LM_PATH, 'tmp/'+'val_ids.npy'), val_lm)
+pickle.dump(itos, open(os.path.join(LM_PATH, 'tmp/'+'itos.pkl'), 'wb'))
 
 
 # Save everything
-trn_lm = np.load(LM_PATH/'tmp'/'trn_ids.npy')
-val_lm = np.load(LM_PATH/'tmp'/'val_ids.npy')
-itos = pickle.load(open(LM_PATH/'tmp'/'itos.pkl', 'rb'))
+trn_lm = np.load(os.path.join(LM_PATH, 'tmp/'+'trn_ids.npy'))
+val_lm = np.load(os.path.join(LM_PATH, 'tmp/'+'val_ids.npy'))
+itos = pickle.load(open(os.path.join(LM_PATH, 'tmp/'+'itos.pkl'), 'rb'))
 
 
 vs=len(itos)

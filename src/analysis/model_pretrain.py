@@ -1,4 +1,5 @@
-from lang_model import *
+
+
 
 ############## using pretrained language model ##############
 
@@ -6,13 +7,19 @@ from lang_model import *
 # Uncomment this cell to download the pre-trained model.
 # It will be placed into the PATH that you defined earlier.
 #! wget -nH -r -np -P {PATH} http://files.fast.ai/models/wt103/
+import os, sys
+import pickle
 
+cwd = os.getcwd()
+sys.path.append(cwd+'/src/preprocess')
+from lang_model import *
 
 # Load the weights of the modelI
 em_sz,nh,nl = 400,1150,3
 
-PRE_PATH = PATH/'models'/'wt103'
-PRE_LM_PATH = PRE_PATH/'fwd_wt103.h5'
+PATH = cwd + '/data/raw/Amazon/'
+PRE_PATH = os.path.join(PATH, 'models/wt103/')
+PRE_LM_PATH = os.path.join(PRE_PATH, 'fwd_wt103.h5')
 
 wgts = torch.load(PRE_LM_PATH, map_location=lambda storage, loc: storage)
 
@@ -23,10 +30,12 @@ row_m = enc_wgts.mean(0)
 enc_wgts.shape
 
 
-
+print(PRE_PATH)
 # Load the vocabulary on which the pre-trained model was trained
 # Define an embedding matrix with the vocabulary of our dataset
-itos2 = pickle.load((PRE_PATH/'itos_wt103.pkl').open('rb'))
+f = open(os.path.join(PRE_PATH, 'itos_wt103.pkl'), 'rb')
+itos2 = pickle.load(f)
+#itos2 = pickle.load(os.path.join(PRE_PATH, 'itos_wt103.pkl').open('rb'))
 stoi2 = collections.defaultdict(lambda:-1, {v:k for k,v in enumerate(itos2)})
 
 new_w = np.zeros((vs, em_sz), dtype=np.float32)
