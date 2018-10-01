@@ -3,7 +3,6 @@ import os
 import pandas as pd
 from os.path import join as Path ### simple joining path
 
-
 # function to load the original data files
 def DataLoad(path, file_name):
     data = []
@@ -41,17 +40,4 @@ def DataLabelFormat(path, data, data_name_str):
     classes = ['neg', 'pos']
     open(Path(class_path, 'classes.txt'), 'w').writelines(f'{o}\n' for o in classes)
 
-
-path = 'data/raw/Amazon'
-train = DataLoad(path, 'train.ft.txt')
-test = DataLoad(path, 'test.ft.txt')
-
-print(f'The train data contains {len(train)} examples')
-print(f'The test data contains {len(test)} examples')
-
-train = train[:1000]
-test = test[1:1000]
-
-
-DataLabelFormat(path, train, 'train')
-DataLabelFormat(path, test, 'test')
+    return data_texts, data_labels

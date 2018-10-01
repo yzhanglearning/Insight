@@ -1,5 +1,4 @@
 
-from inference import *
 
 from time import time
 val_size = 100000
