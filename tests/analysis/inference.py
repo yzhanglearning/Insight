@@ -43,18 +43,28 @@ def get_sentiment(m, stoi, input_str: str):
     m.eval()
     m.reset()
     p = m.forward(tensorIdx)
-    return np.argmax(p[0][0].data.cpu().numpy())
+
+    score = np.argmax(p[0][0].data.cpu().numpy())
+    if score == 0:
+        return ('bad/negative')
+    if score == 1:
+        return ('good/positive')
+
+
+    # return np.argmax(p[0][0].data.cpu().numpy())
 
 def prediction(m, texts):
     """Do the prediction on a list of texts
     """
     y = []
     for i, text in enumerate(texts):
-        if i % 1000 == 0:
-            print(i)
+        #print(texts)
+        #if i % 1000 == 0:
+            #print(i)
         encoded = text
         idx = np.array(encoded)[None]
         idx = np.transpose(idx)
+        #print(idx)
         tensorIdx = VV(idx)
         m.eval()
         m.reset()
@@ -96,7 +106,7 @@ def prediction(m, texts):
 # val_labels = np.squeeze(np.load(CLAS_PATH/'tmp'/'val_labels.npy'))
 
 
-def experiment(trn_size, val_size, trn_class, trn_labels):
+def experiment(trn_size, trn_clas, trn_labels, val_size, val_clas, val_labels, itos, trn_dl, val_dl, md):
     train = random.sample(list(zip(trn_clas, trn_labels)), trn_size)
     aux_trn_clas = np.array([item[0] for item in train])
     aux_trn_labels = np.array([item[1] for item in train])
@@ -118,10 +128,10 @@ def experiment(trn_size, val_size, trn_class, trn_labels):
     val_ds = TextDataset(aux_val_clas, aux_val_labels)
     trn_samp = SortishSampler(aux_trn_clas, key=lambda x: len(aux_trn_clas[x]), bs=bs//2)
     val_samp = SortSampler(aux_val_clas, key=lambda x: len(aux_val_clas[x]))
-    trn_dl = DataLoader(trn_ds, bs//2, transpose=True, num_workers=1, pad_idx=1, sampler=trn_samp)
-    val_dl = DataLoader(val_ds, bs, transpose=True, num_workers=1, pad_idx=1, sampler=val_samp)
+    #trn_dl = DataLoader(trn_ds, bs//2, transpose=True, num_workers=1, pad_idx=1, sampler=trn_samp)
+    #val_dl = DataLoader(val_ds, bs, transpose=True, num_workers=1, pad_idx=1, sampler=val_samp)
     # Define the model and load the backbone lamguage model
-    md = ModelData(PATH, trn_dl, val_dl)
+    #md = ModelData(PATH, trn_dl, val_dl)
     dps = np.array([0.4, 0.5, 0.05, 0.3, 0.1])
     m = get_rnn_classifer(bptt, 20*70, c, vs, emb_sz=em_sz, n_hid=nh, n_layers=nl, pad_token=1,
               layers=[em_sz*3, 50, c], drops=[dps[4], 0.1],
