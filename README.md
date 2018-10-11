@@ -1,13 +1,4 @@
-# Yan's Insight_Project_Framework
-Framework for NLP Transfer Learning project as AI Fellow at Insight Data Science.
-
-## Motivation for this project format:
-- **src** : This folder includes all the functionalities of this project for data, model and training.
-- **tests** : This directory includes inference functionalities.
-#- **configs** : Enable modification of all preset variables within single directory (consisting of one or many config files for separate tasks)
-- **data** : Put your dataset under the /raw directory as well as the trained models.
-#- **build** : Include scripts that automate building of a standalone environment
-#- **static** : Any images or content to include in the README or web framework if part of the pipeline
+# Yan's Insight Project as AI Fellow at Insight Data Science: NLP Transfer Learning
 
 ## Setup
 git clone https://github.com/yzhanglearning/Insight/tree/master
