@@ -1,11 +1,5 @@
 ############## using pretrained language model ##############
 
-
-# Uncomment this cell to download the pre-trained model.
-# It will be placed into the PATH that you defined earlier.
-#! wget -nH -r -np -P {PATH} http://files.fast.ai/models/wt103/
-
-
 ###### load the weights of pre-trained model ########
 import torch
 from os.path import join as Path
@@ -15,6 +9,10 @@ from fastai.text import *
 def preTrainModel(pre_lm_path):
 
     wgts = torch.load(pre_lm_path, map_location=lambda storage, loc: storage)
+
+    # ###??? random initialization weights:
+    for w_i in wgts:
+        wgts[w_i] = torch.rand(wgts[w_i].shape) ###???
 
     # check the word embedding layer and keep a "mean word" for unkonw tokens
     enc_wgts = to_np(wgts['0.encoder.weight'])

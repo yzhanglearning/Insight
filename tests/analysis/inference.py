@@ -46,9 +46,9 @@ def get_sentiment(m, stoi, input_str: str):
 
     score = np.argmax(p[0][0].data.cpu().numpy())
     if score == 0:
-        return ('bad/negative')
+        return 0 #('bad/negative')
     if score == 1:
-        return ('good/positive')
+        return 1#('good/positive')
 
 
     # return np.argmax(p[0][0].data.cpu().numpy())

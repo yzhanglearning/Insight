@@ -15,9 +15,8 @@ from src.preprocess.language_model import get_all
 
 
 
-def preClassify(class_path, lm_path):
+def preClassify(chunksize, class_path, lm_path):
 
-    chunksize = 24000
     df_trn = pd.read_csv(Path(class_path, 'train.csv'), header=None, chunksize=chunksize)
     df_val = pd.read_csv(Path(class_path, 'test.csv'), header=None, chunksize=chunksize)
 
@@ -71,10 +70,17 @@ def classifier(trn_size, val_size, class_path, lm_path, path, itos):
     trn_labels = np.array([item[1] for item in train])
     del train
 
+
     validation = random.sample(list(zip(val_clas, val_labels)), val_size)
     val_clas = np.array([item[0] for item in validation])
     val_labels = np.array([item[1] for item in validation])
     del validation
+
+
+    print(trn_clas.shape)
+    print(val_clas.shape)
+    print(trn_labels.shape)
+    print(val_labels.shape)
 
 
     bptt,em_sz,nh,nl = 70,400,1150,3
@@ -86,6 +92,10 @@ def classifier(trn_size, val_size, class_path, lm_path, path, itos):
     trn_labels -= min_lbl
     val_labels -= min_lbl
     c=int(trn_labels.max())+1
+
+
+    print(len(trn_labels))
+    print(len(val_labels))
 
     # Ccheck that the validation dataset is well balanced so acccuracy is a good metric
     # We'll also check other metrics usual for binary classification (precision, recall, f1 score)
@@ -131,9 +141,7 @@ def classifier(trn_size, val_size, class_path, lm_path, path, itos):
     learn.freeze_to(-1)
 
 
-    learn.lr_find(lrs/1000)
-
-
+    learn.lr_find(lrs/1000)    ### comment becasue pop-up error for mental health dataset
 
     learn.sched.plot()
 
@@ -163,7 +171,7 @@ def classifier(trn_size, val_size, class_path, lm_path, path, itos):
 
     # Unfreeze everything and train for a few epochs on the whole set of parameters of the model
     learn.unfreeze()
-    learn.fit(lrs, 1, wds=wd, cycle_len=2, use_clr=(32,10)) # cycle_len = 14
+    learn.fit(lrs, 1, wds=wd, cycle_len=1, use_clr=(32,10)) # cycle_len = 14
 
 
     learn.sched.plot_loss()
